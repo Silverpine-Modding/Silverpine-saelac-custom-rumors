@@ -24,7 +24,7 @@ public sealed class Plugin : BaseUnityPlugin
 {
     public const string PluginGuid = "renegadex.silverpine.customrumors";
     public const string PluginName = "Custom Rumors";
-    public const string PluginVersion = "1.4.0";
+    public const string PluginVersion = "1.5.0";
 
     internal static ManualLogSource Log { get; private set; } = null!;
     internal static ConfigFile Settings { get; private set; } = null!;
@@ -70,30 +70,20 @@ public sealed class Plugin : BaseUnityPlugin
         MigrateLegacyCrossFactionSetting(newConfiguration);
 
         ModdingToolsMenu.RegisterSession(
-            PluginGuid + ".settings.main",
-            "Rumor Settings",
-            (_, session) => RumorSettingsWindow.Open(session),
+            PluginGuid + ".main",
+            "Custom Rumors",
+            (_, session) => CustomRumorsWindow.Open(session),
             order: 330);
         InventoryModTools.RegisterSession(
-            PluginGuid + ".settings.game",
-            "Rumor Settings",
-            (_, session) => RumorSettingsWindow.Open(session),
+            PluginGuid + ".game",
+            "Custom Rumors",
+            (_, session) => CustomRumorsWindow.Open(session),
             order: 330);
-        ModdingToolsMenu.RegisterSession(
-            PluginGuid + ".force.main",
-            "Force Rumor",
-            (_, session) => ForcedRumorWindow.Open(session),
-            order: 331);
-        InventoryModTools.RegisterSession(
-            PluginGuid + ".force.game",
-            "Force Rumor",
-            (_, session) => ForcedRumorWindow.Open(session),
-            order: 331);
 
         Harmony.CreateAndPatchAll(typeof(Plugin).Assembly, PluginGuid);
         Log.LogInfo(
             "Custom Rumors initialized and registered its Modding Tools "
-            + "settings and forced-rumor interfaces.");
+            + "unified interface and Tell Rumor player action.");
     }
 
     private void BindConfiguration()
@@ -558,9 +548,10 @@ internal static class MultipleDailyRumorGenerationPatch
 internal static class SuccessfulRumorGenerationCounterPatch
 {
     [HarmonyPostfix]
-    private static void CountGeneratedRumor(NPCName npcName)
+    private static void CountGeneratedRumor(NPCName npcName, Rumor rumor)
     {
-        Plugin.RecordRumorGenerated(npcName);
+        if (!ForcedRumorDelivery.IsManualQueuedRumor(rumor))
+            Plugin.RecordRumorGenerated(npcName);
     }
 }
 

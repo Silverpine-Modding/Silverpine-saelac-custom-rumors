@@ -2,7 +2,9 @@
 
 using HarmonyLib;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace SilverpineMods.CustomRumors;
@@ -12,6 +14,79 @@ internal static class ForcedRumorDelivery
     internal const int MaximumTextLength = 1000;
     internal const string RoutineId =
         Plugin.PluginGuid + ".forced-rumor-delivery";
+    private static readonly ConditionalWeakTable<Rumor, ManualRumorMarker>
+        ManualQueuedRumors = new();
+
+    internal static bool TryQueue(
+        NPCName sourceName,
+        NPCName targetName,
+        string rumorText,
+        out string status)
+    {
+        string normalizedText = NormalizeText(rumorText);
+        if (normalizedText.Length == 0)
+        {
+            status = "Type the rumor before adding it to the queue.";
+            return false;
+        }
+        if (normalizedText.Length > MaximumTextLength)
+        {
+            status = "Rumors can contain at most " + MaximumTextLength
+                + " characters.";
+            return false;
+        }
+        if (sourceName == targetName)
+        {
+            status = "The sender and recipient must be different NPCs.";
+            return false;
+        }
+        if (RumorManager.Instance == null)
+        {
+            status = "Load a game before adding a rumor to the queue.";
+            return false;
+        }
+        if (!NeuralNPC.neuralNPCs.TryGetValue(
+                sourceName, out NeuralNPC source)
+            || source == null)
+        {
+            status = "The selected sender is not currently loaded.";
+            return false;
+        }
+        if (!NeuralNPC.neuralNPCs.TryGetValue(
+                targetName, out NeuralNPC target)
+            || target == null)
+        {
+            status = "The selected recipient is not currently loaded.";
+            return false;
+        }
+
+        var rumor = new Rumor(
+            normalizedText,
+            new List<NPCName> { targetName });
+        ManualQueuedRumors.Add(rumor, new ManualRumorMarker());
+        try
+        {
+            RumorManager.Instance.AddRumor(sourceName, rumor);
+        }
+        catch (Exception exception)
+        {
+            ManualQueuedRumors.Remove(rumor);
+            Plugin.Log.LogError(
+                "Could not queue a manual rumor from "
+                + source.GetFinalName() + " to " + target.GetFinalName()
+                + ": " + exception);
+            status = "The rumor could not be queued; see the BepInEx log.";
+            return false;
+        }
+
+        Plugin.Log.LogInfo(
+            "Queued manual rumor from " + source.GetFinalName()
+            + " to " + target.GetFinalName() + ": \""
+            + normalizedText + "\"");
+        status = "Queued " + source.GetFinalName() + " to tell "
+            + target.GetFinalName() + " the typed rumor.";
+        return true;
+    }
 
     internal static bool TryStart(
         NPCName sourceName,
@@ -129,11 +204,14 @@ internal static class ForcedRumorDelivery
         return true;
     }
 
-    private static string NormalizeText(string text) =>
+    internal static string NormalizeText(string text) =>
         (text ?? "")
             .Replace('\r', ' ')
             .Replace('\n', ' ')
             .Trim();
+
+    internal static bool IsManualQueuedRumor(Rumor? rumor) =>
+        rumor != null && ManualQueuedRumors.TryGetValue(rumor, out _);
 
     internal static bool IsForcedRoutine(NPCRoutine? routine) =>
         routine != null
@@ -235,6 +313,10 @@ internal static class ForcedRumorDelivery
         {
             executor.StopOverrideRoutine(routine);
         }
+    }
+
+    private sealed class ManualRumorMarker
+    {
     }
 }
 

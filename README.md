@@ -4,7 +4,7 @@ Custom Rumors is a BepInEx 5 plugin for Silverpine 1.7.3 that makes the NPC
 rumor system configurable. It owns the cross-faction rumor override formerly
 included in Dynamic NPC Relationships.
 
-**Current version:** 1.4.0
+**Current version:** 1.5.0
 
 ## Features
 
@@ -20,11 +20,15 @@ included in Dynamic NPC Relationships.
 - Keep or remove Silverpine's early-hour exception for Darian.
 - Choose the nearest eligible recipient, as in vanilla, or a random eligible
   recipient.
-- Open **Force Rumor** to select a loaded sender and recipient, type the rumor
-  yourself, and immediately start a delivery that bypasses the automatic
-  scheduler's chance, time, visibility, distance, sleep, and following gates.
-- Change every setting live through **Rumor Settings** in both Modding Tools'
-  main-menu interface and its in-game **Mods** tab.
+- Open the single **Custom Rumors** Modding Tools entry and switch between its
+  **Settings** and **Rumor Composer** tabs.
+- Select a loaded sender and recipient from searchable dropdowns, type the
+  rumor yourself, then either add it to the normal rumor queue or force its
+  delivery immediately.
+- Use **Tell Rumor** from the inventory Actions menu or the player-action radial
+  wheel, select a nearby NPC, and type a rumor without opening dialogue. The
+  NPC gives one short in-character response expressing how they feel, and both
+  the rumor and that feeling are saved to the NPC's rumor memory.
 
 The master `General.Enabled` switch restores vanilla behavior while retaining
 the other values. Settings apply immediately and are stored in:
@@ -47,8 +51,10 @@ Forced rumors use Silverpine's own serializable pass-on-rumor routine. The
 selected sender travels to the selected recipient, performs the normal visible
 telling/listening activities, and writes the normal rumor memory to both NPCs.
 The stable forced-routine marker survives saving and loading while a delivery
-is in progress. A forced rumor is a manual action, so it does not create a
-queued rumor or count against `Generation.MaximumRumorsPerNpcPerDay`.
+is in progress. Queue mode instead creates a normal saved rumor for the chosen
+sender and recipient and lets the configured scheduler deliver it. Both are
+manual actions and do not count against
+`Generation.MaximumRumorsPerNpcPerDay`.
 
 ## Migration from Dynamic NPC Relationships
 
@@ -70,19 +76,19 @@ longer controls how rumors are generated or scheduled.
 1. Install BepInEx 5 and Modding Tools Menu 1.9.3 or later.
 2. Place `CustomRumors.dll` in `BepInEx/plugins/CustomRumors/`.
 3. If Dynamic NPC Relationships is installed, update it to 1.19.0 or later.
-4. Start Silverpine and open **Rumor Settings** or **Force Rumor** from Modding
-   Tools.
+4. Start Silverpine and open **Custom Rumors** from Modding Tools.
 
 Only one shared copy of `ModdingTools.dll` should be installed.
 
 ## Lifecycle
 
-The plugin installs its Harmony patches and registers its settings and forced
-delivery tools synchronously in BepInEx `Awake`. Silverpine destroys the initial
-BepInEx host during its main-menu-to-game bootstrap, so the plugin deliberately
-does not unpatch Harmony or unregister persistent callbacks from `OnDestroy`.
-Both temporary windows are `ModToolBehaviour` instances and release their own
-sessions normally when they close or are destroyed.
+The plugin installs its Harmony patches and registers its unified tool
+synchronously in BepInEx `Awake`. Silverpine destroys the initial BepInEx host
+during its main-menu-to-game bootstrap, so the plugin deliberately does not
+unpatch Harmony or unregister persistent callbacks from `OnDestroy`. The
+temporary unified window is a `ModToolBehaviour` and releases its session
+normally when it closes or is destroyed. The **Tell Rumor** ability uses
+Silverpine's native action-menu, targeting, and text-input lifecycles.
 
 ## Build
 

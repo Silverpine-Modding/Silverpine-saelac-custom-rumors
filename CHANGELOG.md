@@ -2,6 +2,26 @@
 
 Developed by Saelac with assistance from ChatGPT.
 
+## 1.5.0
+
+- Consolidated the settings and composer into one **Custom Rumors** button in
+  each Modding Tools interface, with internal **Settings** and
+  **Rumor Composer** tabs.
+- Replaced the sender and recipient arrow cyclers with searchable dropdowns.
+- Replaced the ambiguous queue-mode and submit button pair with one delivery
+  mode dropdown and one **Create Rumor** button.
+- Disabled horizontal scrolling and wrapped long content throughout the unified
+  interface.
+- Added **Add to Rumor Queue** mode alongside immediate forced delivery.
+  Manually queued rumors use normal scheduling and saving without consuming
+  the sender's automatic daily-generation cap.
+- Added **Tell Rumor** to the inventory Actions menu and player-action radial
+  wheel, using the same nearby-NPC targeting flow as Toggle Follower.
+- Player-told rumors use Silverpine's native text prompt rather than dialogue.
+  The selected NPC generates a one-line in-character reaction expressing their
+  feeling about the matter; both the rumor and feeling are stored in rumor
+  memory.
+
 ## 1.4.0
 
 - Added **Force Rumor** to the main-menu and in-game Modding Tools interfaces.
