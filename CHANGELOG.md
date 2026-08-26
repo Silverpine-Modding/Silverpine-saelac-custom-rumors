@@ -2,6 +2,19 @@
 
 Developed by Saelac with assistance from ChatGPT.
 
+## 1.4.0
+
+- Added **Force Rumor** to the main-menu and in-game Modding Tools interfaces.
+- Added live sender and recipient selection plus a player-authored rumor text
+  area with a 1,000-character limit.
+- Forced delivery starts Silverpine's native pass-on-rumor routine immediately
+  and bypasses the automatic chance, hour, visibility, distance, sleep, and
+  following restrictions for that marked routine only.
+- Forced deliveries retain travel, door handling, telling/listening activities,
+  normal rumor memories, and save/load support while in progress.
+- Manual rumors do not enter the automatic queue or consume the per-NPC daily
+  generation cap.
+
 ## 1.3.0
 
 - Changed `Generation.MaximumRumorsPerNpcPerDay` so `-1` means unlimited, `0`

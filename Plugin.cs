@@ -24,7 +24,7 @@ public sealed class Plugin : BaseUnityPlugin
 {
     public const string PluginGuid = "renegadex.silverpine.customrumors";
     public const string PluginName = "Custom Rumors";
-    public const string PluginVersion = "1.3.0";
+    public const string PluginVersion = "1.4.0";
 
     internal static ManualLogSource Log { get; private set; } = null!;
     internal static ConfigFile Settings { get; private set; } = null!;
@@ -79,11 +79,21 @@ public sealed class Plugin : BaseUnityPlugin
             "Rumor Settings",
             (_, session) => RumorSettingsWindow.Open(session),
             order: 330);
+        ModdingToolsMenu.RegisterSession(
+            PluginGuid + ".force.main",
+            "Force Rumor",
+            (_, session) => ForcedRumorWindow.Open(session),
+            order: 331);
+        InventoryModTools.RegisterSession(
+            PluginGuid + ".force.game",
+            "Force Rumor",
+            (_, session) => ForcedRumorWindow.Open(session),
+            order: 331);
 
         Harmony.CreateAndPatchAll(typeof(Plugin).Assembly, PluginGuid);
         Log.LogInfo(
             "Custom Rumors initialized and registered its Modding Tools "
-            + "settings interfaces.");
+            + "settings and forced-rumor interfaces.");
     }
 
     private void BindConfiguration()
