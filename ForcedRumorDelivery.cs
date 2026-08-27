@@ -295,6 +295,7 @@ internal static class ForcedRumorDelivery
         Plugin.Log.LogInfo(
             "Completed forced rumor delivery from " + sourceName
             + " to " + targetName + ": \"" + rumorText + "\"");
+        NpcRumorReaction.Begin(source, target, rumorText);
         if (UpperNotificationUI.Instance != null)
         {
             UpperNotificationUI.Instance.OneOff(

@@ -2,6 +2,18 @@
 
 Developed by Saelac with assistance from ChatGPT.
 
+## 1.6.0
+
+- Added the default-off `Reactions.NpcToNpcReactionsEnabled` toggle.
+- When enabled, a successful normal or forced NPC-to-NPC rumor delivery asks
+  the recipient for one short, in-character feeling about the rumor.
+- NPC rumor reactions are stored only in the recipient's rumor memory and
+  written to the BepInEx log. They do not create player notifications or
+  floating text.
+- Isolated reaction generation from the player-dialogue point of view and added
+  narration stripping, validation, and one retry for observer-aware or
+  multi-sentence model output. Reactions have no fixed word or character cap.
+
 ## 1.5.0
 
 - Consolidated the settings and composer into one **Custom Rumors** button in

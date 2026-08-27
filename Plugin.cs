@@ -24,7 +24,7 @@ public sealed class Plugin : BaseUnityPlugin
 {
     public const string PluginGuid = "renegadex.silverpine.customrumors";
     public const string PluginName = "Custom Rumors";
-    public const string PluginVersion = "1.5.0";
+    public const string PluginVersion = "1.6.0";
 
     internal static ManualLogSource Log { get; private set; } = null!;
     internal static ConfigFile Settings { get; private set; } = null!;
@@ -51,6 +51,8 @@ public sealed class Plugin : BaseUnityPlugin
         { get; private set; } = null!;
     internal static ConfigEntry<bool> PreferNearestRecipient { get; private set; }
         = null!;
+    internal static ConfigEntry<bool> NpcRumorReactionsEnabled
+        { get; private set; } = null!;
 
     private static readonly FieldInfo ThingsThatHappenedField =
         AccessTools.Field(typeof(NeuralNPC), "thingsThatHappened");
@@ -167,6 +169,14 @@ public sealed class Plugin : BaseUnityPlugin
             true,
             "Choose the closest currently eligible rumor recipient. Disabled "
             + "chooses randomly from the eligible recipients.");
+        NpcRumorReactionsEnabled = Config.Bind(
+            "Reactions",
+            "NpcToNpcReactionsEnabled",
+            false,
+            "Generate one private, in-character feeling when an NPC receives "
+            + "a rumor from another NPC. The feeling is stored in the "
+            + "recipient's rumor memory and written to the BepInEx log, but "
+            + "is never shown to the player.");
     }
 
     private static void MigrateLegacyCrossFactionSetting(

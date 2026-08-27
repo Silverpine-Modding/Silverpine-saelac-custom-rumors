@@ -199,6 +199,12 @@ internal sealed class CustomRumorsWindow : ModToolBehaviour
             "Choose the closest eligible target. Off chooses a random eligible "
                 + "recipient.",
             Plugin.PreferNearestRecipient);
+        DrawToggle(
+            "NPC Reactions to NPC Rumors",
+            "Let the receiving NPC privately generate one line describing "
+                + "their feeling about an NPC-delivered rumor. The reaction "
+                + "is saved to memory and the BepInEx log only.",
+            Plugin.NpcRumorReactionsEnabled);
         GUILayout.EndScrollView();
     }
 
@@ -634,6 +640,7 @@ internal sealed class CustomRumorsWindow : ModToolBehaviour
         Plugin.LatestDeliveryHour.Value = 22;
         Plugin.DarianIgnoresEarliestHour.Value = true;
         Plugin.PreferNearestRecipient.Value = true;
+        Plugin.NpcRumorReactionsEnabled.Value = false;
         Save("Restored Silverpine-equivalent rumor defaults.");
     }
 

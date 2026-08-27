@@ -4,7 +4,7 @@ Custom Rumors is a BepInEx 5 plugin for Silverpine 1.7.3 that makes the NPC
 rumor system configurable. It owns the cross-faction rumor override formerly
 included in Dynamic NPC Relationships.
 
-**Current version:** 1.5.0
+**Current version:** 1.6.0
 
 ## Features
 
@@ -20,6 +20,9 @@ included in Dynamic NPC Relationships.
 - Keep or remove Silverpine's early-hour exception for Darian.
 - Choose the nearest eligible recipient, as in vanilla, or a random eligible
   recipient.
+- Optionally let receiving NPCs privately react to NPC-delivered rumors. Their
+  one-line feeling is stored in rumor memory and written to the BepInEx log,
+  without showing a player notification.
 - Open the single **Custom Rumors** Modding Tools entry and switch between its
   **Settings** and **Rumor Composer** tabs.
 - Select a loaded sender and recipient from searchable dropdowns, type the
@@ -55,6 +58,17 @@ is in progress. Queue mode instead creates a normal saved rumor for the chosen
 sender and recipient and lets the configured scheduler deliver it. Both are
 manual actions and do not count against
 `Generation.MaximumRumorsPerNpcPerDay`.
+
+`Reactions.NpcToNpcReactionsEnabled` defaults to `false`. When enabled, each
+successful NPC-to-NPC delivery asks the receiving NPC for one short,
+in-character feeling about the rumor and adds that feeling only to the
+recipient's rumor memory. The generated response is also written to the
+BepInEx log. Unlike player-told rumors, NPC-to-NPC reactions never display a
+notification or floating text to the player. Reaction generation uses a
+private two-NPC context that excludes the player and bystanders. Narrated,
+observer-aware, or multi-sentence output is stripped or rejected and retried
+instead of being written unfiltered to memory. Reactions have no fixed word or
+character cap.
 
 ## Migration from Dynamic NPC Relationships
 
