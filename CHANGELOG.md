@@ -2,6 +2,16 @@
 
 Developed by Saelac with assistance from ChatGPT.
 
+## 1.6.1
+
+- Successful NPC-to-NPC rumor reactions are now stored in the sender's rumor
+  memory as well as the recipient's, so the sender remembers how the recipient
+  responded.
+- Removed the one-sentence reaction restriction while retaining the private
+  two-NPC context and observer/narration safeguards.
+- NPC rumor reactions now use the same model-dependent, NPC-specific word cap
+  as normal Silverpine conversation instead of a custom reaction length limit.
+
 ## 1.6.0
 
 - Added the default-off `Reactions.NpcToNpcReactionsEnabled` toggle.

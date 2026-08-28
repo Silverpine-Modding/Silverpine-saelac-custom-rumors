@@ -24,7 +24,7 @@ public sealed class Plugin : BaseUnityPlugin
 {
     public const string PluginGuid = "renegadex.silverpine.customrumors";
     public const string PluginName = "Custom Rumors";
-    public const string PluginVersion = "1.6.0";
+    public const string PluginVersion = "1.6.1";
 
     internal static ManualLogSource Log { get; private set; } = null!;
     internal static ConfigFile Settings { get; private set; } = null!;
@@ -174,9 +174,9 @@ public sealed class Plugin : BaseUnityPlugin
             "NpcToNpcReactionsEnabled",
             false,
             "Generate one private, in-character feeling when an NPC receives "
-            + "a rumor from another NPC. The feeling is stored in the "
-            + "recipient's rumor memory and written to the BepInEx log, but "
-            + "is never shown to the player.");
+            + "a rumor from another NPC. The reaction is stored in both NPCs' "
+            + "rumor memories and written to the BepInEx log, but is never "
+            + "shown to the player.");
     }
 
     private static void MigrateLegacyCrossFactionSetting(

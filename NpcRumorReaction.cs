@@ -3,6 +3,7 @@
 using HarmonyLib;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using UnityEngine;
@@ -13,6 +14,10 @@ internal static class NpcRumorReaction
 {
     private const int MaximumAttempts = 2;
     private static readonly HashSet<NeuralNPC> BusyRecipients = new();
+    private static readonly FieldInfo? VerbosityField =
+        AccessTools.Field(typeof(NeuralNPC), "verbosity");
+    private static readonly MethodInfo? IsVerbosityLimitedMethod =
+        AccessTools.Method(typeof(NeuralNPC), "IsVerbosityLimited");
 
     internal static async void Begin(
         NeuralNPC source,
@@ -43,6 +48,8 @@ internal static class NpcRumorReaction
 
         try
         {
+            int? normalConversationWordCap =
+                GetNormalConversationWordCap(recipient);
             string response = "";
             string rejectionReason = "no response was generated";
             for (int attempt = 1; attempt <= MaximumAttempts; attempt++)
@@ -52,6 +59,7 @@ internal static class NpcRumorReaction
                         sourceName,
                         recipientName,
                         rumor,
+                        normalConversationWordCap,
                         attempt > 1),
                     deterministic: false,
                     takes: -1,
@@ -61,6 +69,7 @@ internal static class NpcRumorReaction
                 if (TryNormalizeResponse(
                         rawResponse,
                         recipientName,
+                        normalConversationWordCap,
                         out response,
                         out rejectionReason))
                 {
@@ -77,7 +86,7 @@ internal static class NpcRumorReaction
             if (response.Length == 0)
             {
                 throw new InvalidOperationException(
-                    "The NPC model did not return a valid private, one-sentence "
+                    "The NPC model did not return a valid private "
                     + "reaction after " + MaximumAttempts + " attempts ("
                     + rejectionReason + ").");
             }
@@ -87,6 +96,10 @@ internal static class NpcRumorReaction
                 + " expressed this feeling about the matter: \""
                 + response + "\".";
             recipient.AddThingThatHappened(
+                feelingMemory,
+                overwrite: false,
+                NeuralNPC.AdvancedMemoryElement.MemoryType.Rumor);
+            source.AddThingThatHappened(
                 feelingMemory,
                 overwrite: false,
                 NeuralNPC.AdvancedMemoryElement.MemoryType.Rumor);
@@ -113,6 +126,7 @@ internal static class NpcRumorReaction
         string sourceName,
         string recipientName,
         string rumor,
+        int? normalConversationWordCap,
         bool retry)
     {
         return "This is a private NPC-to-NPC exchange. " + sourceName
@@ -122,19 +136,25 @@ internal static class NpcRumorReaction
             + ". Only these two NPCs hear the exchange. Regardless of who may "
             + "be nearby, the player and all other people are not participants "
             + "and must never be mentioned, addressed, shown watching, or "
-            + "described as overhearing it. Output exactly one short, "
-            + "first-person sentence. Output only the spoken sentence: no "
+            + "described as overhearing it. Output a concise first-person "
+            + "response. Output only the spoken response: no "
             + "narration, actions, asterisks, quotation marks, speaker label, "
             + "or additional lines."
+            + (normalConversationWordCap.HasValue
+                ? " Use Silverpine's normal conversation limit for "
+                    + recipientName + ": no more than "
+                    + normalConversationWordCap.Value + " words."
+                : "")
             + (retry
                 ? " Your previous answer broke these formatting or privacy "
-                    + "rules; answer again using only the required sentence."
+                    + "rules; answer again using only the required response."
                 : "");
     }
 
     private static bool TryNormalizeResponse(
         string rawResponse,
         string recipientName,
+        int? normalConversationWordCap,
         out string response,
         out string rejectionReason)
     {
@@ -182,14 +202,18 @@ internal static class NpcRumorReaction
             return false;
         }
 
-        int sentenceCount = Regex.Matches(
-            normalized,
-            @"[.!?]+(?=\s|$)").Count;
-        if (sentenceCount > 1)
+        if (normalConversationWordCap.HasValue)
         {
-            rejectionReason = "it contained more than one sentence";
-            return false;
+            int wordCount = Regex.Matches(normalized, @"\S+").Count;
+            if (wordCount > normalConversationWordCap.Value)
+            {
+                rejectionReason = "it exceeded Silverpine's normal "
+                    + normalConversationWordCap.Value
+                    + "-word conversation limit for this NPC";
+                return false;
+            }
         }
+
         response = normalized;
         rejectionReason = "";
         return true;
@@ -204,6 +228,29 @@ internal static class NpcRumorReaction
                 + @"no one|nobody) (?:else )?(?:can |could |did |might |may |"
                 + @"has |have )?hear(?:d|s|ing)?)\b",
             RegexOptions.IgnoreCase);
+
+    private static int? GetNormalConversationWordCap(NeuralNPC recipient)
+    {
+        try
+        {
+            bool limited = IsVerbosityLimitedMethod?.Invoke(null, null)
+                is true;
+            if (limited
+                && VerbosityField?.GetValue(recipient) is int verbosity
+                && verbosity > 0)
+            {
+                return verbosity;
+            }
+        }
+        catch (Exception exception)
+        {
+            Plugin.Log.LogWarning(
+                "Could not read Silverpine's normal conversation cap for "
+                + recipient.GetFinalName() + ": " + exception.Message);
+        }
+
+        return null;
+    }
 
     private static string NormalizeForLog(string response)
     {

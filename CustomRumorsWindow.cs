@@ -203,7 +203,7 @@ internal sealed class CustomRumorsWindow : ModToolBehaviour
             "NPC Reactions to NPC Rumors",
             "Let the receiving NPC privately generate one line describing "
                 + "their feeling about an NPC-delivered rumor. The reaction "
-                + "is saved to memory and the BepInEx log only.",
+                + "is saved to both NPCs' memories and the BepInEx log only.",
             Plugin.NpcRumorReactionsEnabled);
         GUILayout.EndScrollView();
     }
