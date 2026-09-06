@@ -29,7 +29,7 @@ internal static class AddTellRumorAbilityPatch
         if (abilities.Any(ability => ability is PlayerAbility_TellRumor))
             return false;
 
-        abilities.Insert(0, new PlayerAbility_TellRumor());
+        abilities.Add(new PlayerAbility_TellRumor());
         return true;
     }
 }
@@ -50,8 +50,7 @@ internal static class DrawTellRumorInPlayerActionWheelPatch
         }
 
         var ability = new PlayerAbility_TellRumor();
-        genericListUIItems.Insert(
-            0,
+        genericListUIItems.Add(
             new ListUIItem_Generic(
                 ability.Name,
                 ability.Icon,

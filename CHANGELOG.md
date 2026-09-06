@@ -2,6 +2,11 @@
 
 Developed by Saelac with assistance from ChatGPT.
 
+## 1.6.3
+
+- Moved **Tell Rumor** after Silverpine's built-in actions in both the inventory
+  Actions list and the player-action radial menu.
+
 ## 1.6.2
 
 - Reissued the corrected NPC-to-NPC reaction behavior under an unambiguous

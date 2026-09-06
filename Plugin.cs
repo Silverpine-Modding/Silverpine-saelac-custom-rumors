@@ -24,7 +24,7 @@ public sealed class Plugin : BaseUnityPlugin
 {
     public const string PluginGuid = "renegadex.silverpine.customrumors";
     public const string PluginName = "Custom Rumors";
-    public const string PluginVersion = "1.6.2";
+    public const string PluginVersion = "1.6.3";
 
     internal static ManualLogSource Log { get; private set; } = null!;
     internal static ConfigFile Settings { get; private set; } = null!;

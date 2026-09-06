@@ -4,7 +4,7 @@ Custom Rumors is a BepInEx 5 plugin for Silverpine 1.7.3 that makes the NPC
 rumor system configurable. It owns the cross-faction rumor override formerly
 included in Dynamic NPC Relationships.
 
-**Current version:** 1.6.2
+**Current version:** 1.6.3
 
 ## Features
 
@@ -31,7 +31,8 @@ included in Dynamic NPC Relationships.
 - Use **Tell Rumor** from the inventory Actions menu or the player-action radial
   wheel, select a nearby NPC, and type a rumor without opening dialogue. The
   NPC gives one short in-character response expressing how they feel, and both
-  the rumor and that feeling are saved to the NPC's rumor memory.
+  the rumor and that feeling are saved to the NPC's rumor memory. **Tell
+  Rumor** appears after Silverpine's built-in actions in both menus.
 
 The master `General.Enabled` switch restores vanilla behavior while retaining
 the other values. Settings apply immediately and are stored in:
