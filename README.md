@@ -4,7 +4,7 @@ Custom Rumors is a BepInEx 5 plugin for Silverpine 1.7.3 that makes the NPC
 rumor system configurable. It owns the cross-faction rumor override formerly
 included in Dynamic NPC Relationships.
 
-**Current version:** 1.6.1
+**Current version:** 1.6.2
 
 ## Features
 

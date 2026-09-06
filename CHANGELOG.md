@@ -2,6 +2,15 @@
 
 Developed by Saelac with assistance from ChatGPT.
 
+## 1.6.2
+
+- Reissued the corrected NPC-to-NPC reaction behavior under an unambiguous
+  version number so the installed build can be distinguished from an earlier
+  1.6.1 test DLL that still rejected multi-sentence reactions.
+- NPC-to-NPC reactions retain multiple-sentence support, Silverpine's normal
+  conversation cap, shared sender/recipient reaction memories, and the private
+  observer/narration safeguards introduced in 1.6.1.
+
 ## 1.6.1
 
 - Successful NPC-to-NPC rumor reactions are now stored in the sender's rumor
