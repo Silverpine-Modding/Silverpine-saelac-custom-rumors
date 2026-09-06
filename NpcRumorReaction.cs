@@ -136,8 +136,10 @@ internal static class NpcRumorReaction
             + ". Only these two NPCs hear the exchange. Regardless of who may "
             + "be nearby, the player and all other people are not participants "
             + "and must never be mentioned, addressed, shown watching, or "
-            + "described as overhearing it. Output a concise first-person "
-            + "response. Output only the spoken response: no "
+            + "described as overhearing it. Respond naturally in character "
+            + "as " + recipientName + ", speaking directly to " + sourceName
+            + " about the rumor. Express a reaction in the NPC's own voice; "
+            + "first-person pronouns are optional. Output only the spoken response: no "
             + "narration, actions, asterisks, quotation marks, speaker label, "
             + "or additional lines."
             + (normalConversationWordCap.HasValue
@@ -193,15 +195,8 @@ internal static class NpcRumorReaction
             rejectionReason = "it implied that the player or another observer heard the exchange";
             return false;
         }
-        if (!Regex.IsMatch(
-                normalized,
-                @"\b(I|I'm|I've|I'd|I'll|me|my|mine|myself)\b",
-                RegexOptions.IgnoreCase))
-        {
-            rejectionReason = "it was not a first-person reaction";
-            return false;
-        }
-
+        // Direct dialogue can express a reaction without first-person pronouns.
+        // Their presence or absence does not establish whether text is narration.
         if (normalConversationWordCap.HasValue)
         {
             int wordCount = Regex.Matches(normalized, @"\S+").Count;

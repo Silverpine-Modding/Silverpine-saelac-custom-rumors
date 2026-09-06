@@ -2,6 +2,14 @@
 
 Developed by Saelac with assistance from ChatGPT.
 
+## 1.6.4
+
+- Fixed valid NPC-to-NPC rumor reactions being rejected merely because they
+  did not contain first-person pronouns such as "I", "me", or "my".
+- Updated the reaction prompt to allow natural direct dialogue in the
+  recipient's voice. Normal conversation caps, private-exchange safeguards,
+  and sender/recipient reaction memories are retained.
+
 ## 1.6.3
 
 - Moved **Tell Rumor** after Silverpine's built-in actions in both the inventory

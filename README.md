@@ -4,7 +4,7 @@ Custom Rumors is a BepInEx 5 plugin for Silverpine 1.7.3 that makes the NPC
 rumor system configurable. It owns the cross-faction rumor override formerly
 included in Dynamic NPC Relationships.
 
-**Current version:** 1.6.3
+**Current version:** 1.6.4
 
 ## Features
 
@@ -69,7 +69,9 @@ display a notification or floating text to the player. Reaction generation
 uses a private two-NPC context that excludes the player and bystanders.
 Narrated or observer-aware output is stripped or rejected and retried instead
 of being written unfiltered to memory. Reactions may contain multiple
-sentences. When Silverpine applies an NPC-specific word cap to normal
+sentences and do not need first-person pronouns such as "I", "me", or "my".
+Natural direct replies such as "Thank you for the warning, Brier." are valid.
+When Silverpine applies an NPC-specific word cap to normal
 conversation for the active model, the same cap is applied to that NPC's rumor
 reaction; no separate character cap is imposed.
 
